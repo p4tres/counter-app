@@ -6,11 +6,12 @@
 
 <ion-content [fullscreen]="true" class="ion-padding">
   <app-counter heading="New Counter" (saved)="onSaved($event)"></app-counter>
+  <app-counter heading="New Counter 2.0" [initialValue]="10" (saved)="onSaved($event)"></app-counter>
 
   @if (savedCounters.length > 0) {
     <ion-list>
       <ion-list-header>
-        <ion-label>Saved Counters</ion-label>
+        <ion-label>Saved Counters {{ savedCounters.length}}: Sum {{ savedCounters.reduce((sum, counter) => sum + counter.value, 0) }}</ion-label>
       </ion-list-header>
 
       @for (counter of savedCounters; track counter.id) {
@@ -20,6 +21,7 @@
             <p> {{ counter.id }}</p>
           </ion-label>
           <ion-note slot="end">{{ counter.value }}</ion-note>
+          <ion-button slot="end" color="danger" fill="clear" (click)="deleteCounter(counter.id)">Delete</ion-button>
         </ion-item>
       }
     </ion-list>
@@ -29,3 +31,4 @@
     </p>
   }
 </ion-content>
+

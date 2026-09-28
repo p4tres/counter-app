@@ -28,9 +28,14 @@ import { SavedCounter } from '../../models/saved-counter';
 export class CounterComponent {
   readonly heading = input('New counter');
   readonly saved = output<SavedCounter>();
+  readonly initialValue = input(0);
 
   counterName = '';
-  count = 0;
+  count = 0;;
+
+  ngOnInit(): void {
+    this.count = this.initialValue();
+  }
 
   increment():void {
     this.count++;
@@ -43,7 +48,7 @@ export class CounterComponent {
   }
 
   reset():void {
-    this.count = 0;
+    this.count = this.initialValue();
   }
 
   save():void {
@@ -60,6 +65,6 @@ export class CounterComponent {
     });
 
     this.counterName = '';
-    this.count = 0;
+    this.count = this.initialValue();
   }
 }

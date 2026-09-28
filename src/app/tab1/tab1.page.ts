@@ -9,6 +9,7 @@ import {
   IonNote,
   IonTitle,
   IonToolbar,
+  IonButton,
 } from '@ionic/angular';
 import { SavedCounter } from '../models/saved-counter';
 import { CounterComponent } from '../components/counter/counter.component';
@@ -28,6 +29,7 @@ import { CounterComponent } from '../components/counter/counter.component';
     IonNote,
     IonTitle,
     IonToolbar,
+    IonButton,
   ],
 })
 export class Tab1Page {
@@ -35,5 +37,9 @@ export class Tab1Page {
 
   onSaved(counter: SavedCounter): void {
     this.savedCounters.unshift(counter);
+  }
+
+  deleteCounter(id: string): void {
+    this.savedCounters = this.savedCounters.filter((counter) => counter.id !== id);
   }
 }
