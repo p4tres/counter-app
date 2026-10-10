@@ -57,7 +57,7 @@ export class CounterService {
       console.error('Failed to load saved counters:', error);
       this.countersState.set([]);
     } finally {
-      this.initializedState.set(true);``
+      this.initializedState.set(true);
     }
   }
 
