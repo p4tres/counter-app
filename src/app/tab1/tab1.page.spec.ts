@@ -37,5 +37,7 @@ describe('Tab1Page', () => {
 
     expect(counterServiceMock.add).toHaveBeenCalledTimes(1);
     expect(counterServiceMock.add).toHaveBeenCalledWith(counter);
+
+    expect(page.toastMessage()).toContain('První');
   });
 });

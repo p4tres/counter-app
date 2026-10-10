@@ -1,6 +1,7 @@
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import {
+  IonAlert,
   IonButton,
   IonContent,
   IonHeader,
@@ -13,6 +14,7 @@ import {
   IonSelectOption,
   IonSpinner,
   IonTitle,
+  IonToast,
   IonToolbar,
 } from '@ionic/angular';
 import { SavedCounter } from '../models/saved-counter';
@@ -31,6 +33,7 @@ export type SortOption =
   styleUrls: ['tab2.page.scss'],
   imports: [
     DatePipe,
+    IonAlert,
     IonButton,
     IonContent,
     IonHeader,
@@ -43,6 +46,7 @@ export type SortOption =
     IonSelectOption,
     IonSpinner,
     IonTitle,
+    IonToast,
     IonToolbar,
   ],
 })
@@ -51,6 +55,15 @@ export class Tab2Page implements OnInit {
 
   readonly searchTerm = signal('');
   readonly sortBy = signal<SortOption>('newest');
+
+  // Stav potvrzovacího dialogu a toastu.
+  readonly isClearAlertOpen = signal(false);
+  readonly toastMessage = signal<string | null>(null);
+
+  readonly clearAlertButtons = [
+    { text: 'Zrušit', role: 'cancel' },
+    { text: 'Vymazat', role: 'destructive' },
+  ];
 
   readonly total = computed(() =>
     this.counterService
@@ -82,9 +95,20 @@ export class Tab2Page implements OnInit {
 
   async remove(id: string): Promise<void> {
     await this.counterService.remove(id);
+    this.toastMessage.set('Záznam byl odstraněn.');
   }
 
-  async clear(): Promise<void> {
+  openClearAlert(): void {
+    this.isClearAlertOpen.set(true);
+  }
+
+  async onClearAlertDismiss(role: string | undefined): Promise<void> {
+    this.isClearAlertOpen.set(false);
+
+    if (role !== 'destructive') {
+      return;
+    }
+
     await this.counterService.clear();
   }
 
@@ -93,7 +117,6 @@ export class Tab2Page implements OnInit {
   ): (a: SavedCounter, b: SavedCounter) => number {
     switch (sortBy) {
       case 'newest':
-        // ISO 8601 řetězce lze porovnávat přímo jako text.
         return (a, b) => b.createdAt.localeCompare(a.createdAt);
       case 'oldest':
         return (a, b) => a.createdAt.localeCompare(b.createdAt);

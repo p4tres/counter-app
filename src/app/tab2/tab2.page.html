@@ -18,7 +18,7 @@
         <p>Počet záznamů: {{ counterService.counters().length }}</p>
         <p>Součet hodnot: <strong>{{ total() }}</strong></p>
       </div>
-      <ion-button color="danger" fill="outline" size="small" (click)="clear()">
+      <ion-button color="danger" fill="outline" size="small" (click)="openClearAlert()">
         Vymazat vše
       </ion-button>
     </div>
@@ -71,4 +71,21 @@
       </ion-list>
     }
   }
+
+  <ion-alert
+    [isOpen]="isClearAlertOpen()"
+    header="Vymazat historii?"
+    message="Všechny uložené záznamy budou odstraněny. Tuto akci nelze vrátit zpět."
+    [buttons]="clearAlertButtons"
+    (didDismiss)="onClearAlertDismiss($event.detail.role)"
+  ></ion-alert>
+
+  <ion-toast
+    [isOpen]="toastMessage() !== null"
+    [message]="toastMessage() ?? ''"
+    [duration]="2000"
+    position="top"
+    color="success"
+    (didDismiss)="toastMessage.set(null)"
+  ></ion-toast>
 </ion-content>
