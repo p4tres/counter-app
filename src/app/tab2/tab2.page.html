@@ -42,10 +42,26 @@
         <ion-select-option value="value-desc">Hodnota sestupně</ion-select-option>
         <ion-select-option value="value-asc">Hodnota vzestupně</ion-select-option>
       </ion-select>
+
+      <!-- Individuální funkce – varianta D: filtr podle znaménka hodnoty -->
+      <ion-segment
+        [value]="valueFilter()"
+        (ionChange)="onValueFilterChange($event.detail.value)"
+      >
+        <ion-segment-button value="all">
+          <ion-label>Všechny</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="positive">
+          <ion-label>Kladné</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="negative">
+          <ion-label>Záporné</ion-label>
+        </ion-segment-button>
+      </ion-segment>
     </div>
 
     @if (visibleCounters().length === 0) {
-      <p class="state-message">Hledání neodpovídá žádný záznam.</p>
+      <p class="state-message">Hledání ani filtru neodpovídá žádný záznam.</p>
     } @else {
       <ion-list>
         @for (counter of visibleCounters(); track counter.id) {

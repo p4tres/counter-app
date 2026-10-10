@@ -16,6 +16,8 @@ import {
   IonTitle,
   IonToast,
   IonToolbar,
+  IonSegment,
+  IonSegmentButton,
 } from '@ionic/angular';
 import { SavedCounter } from '../models/saved-counter';
 import { CounterService } from '../services/counter.service';
@@ -26,6 +28,8 @@ export type SortOption =
   | 'name'
   | 'value-desc'
   | 'value-asc';
+
+export type ValueFilter = 'all' | 'positive' | 'negative';
 
 @Component({
   selector: 'app-tab2',
@@ -48,6 +52,8 @@ export type SortOption =
     IonTitle,
     IonToast,
     IonToolbar,
+    IonSegment,
+    IonSegmentButton,
   ],
 })
 export class Tab2Page implements OnInit {
@@ -55,8 +61,8 @@ export class Tab2Page implements OnInit {
 
   readonly searchTerm = signal('');
   readonly sortBy = signal<SortOption>('newest');
+  readonly valueFilter = signal<ValueFilter>('all');
 
-  // Stav potvrzovacího dialogu a toastu.
   readonly isClearAlertOpen = signal(false);
   readonly toastMessage = signal<string | null>(null);
 
@@ -73,10 +79,12 @@ export class Tab2Page implements OnInit {
 
   readonly visibleCounters = computed(() => {
     const term = this.searchTerm().trim().toLocaleLowerCase();
+    const valueFilter = this.valueFilter();
 
     const filtered = this.counterService
       .counters()
-      .filter((counter) => counter.name.toLocaleLowerCase().includes(term));
+      .filter((counter) => counter.name.toLocaleLowerCase().includes(term) &&
+        this.matchesValueFilter(counter.value, valueFilter));
 
     return [...filtered].sort(this.comparator(this.sortBy()));
   });
@@ -91,6 +99,12 @@ export class Tab2Page implements OnInit {
 
   onSortChange(value: SortOption): void {
     this.sortBy.set(value);
+  }
+
+  onValueFilterChange(value: string | number | undefined): void {
+    if (value === 'all' || value === 'positive' || value === 'negative') {
+      this.valueFilter.set(value);
+    }
   }
 
   async remove(id: string): Promise<void> {
@@ -110,6 +124,17 @@ export class Tab2Page implements OnInit {
     }
 
     await this.counterService.clear();
+  }
+
+  private matchesValueFilter(value: number, filter: ValueFilter): boolean {
+    switch (filter) {
+      case 'positive':
+        return value > 0;
+      case 'negative':
+        return value < 0;
+      case 'all':
+        return true;
+    }
   }
 
   private comparator(

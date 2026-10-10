@@ -37,24 +37,22 @@ export class CounterComponent {
     this.count = this.initialValue();
   }
 
-  increment():void {
+  increment(): void {
     this.count++;
   }
 
-  decrement():void {
-    if (this.count > 0) {
-      this.count--;
-    }
+  decrement(): void {
+    this.count--;
   }
 
-  reset():void {
+  reset(): void {
     this.count = this.initialValue();
   }
 
-  save():void {
+  save(): void {
     const name = this.counterName.trim();
 
-    if (!name){
+    if (!name) {
       return;
     }
 
